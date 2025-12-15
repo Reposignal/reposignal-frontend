@@ -8,4 +8,4 @@ cmds = ["bun install --frozen-lockfile"]
 cmds = []
 
 [start]
-cmds = "bun run dev"
+cmds = ["bun run dev"]
