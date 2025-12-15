@@ -1,4 +1,4 @@
-"use client";
+'use client'
 function ChevronIcon(props: { className?: string }) {
   return (
     <svg
@@ -45,7 +45,7 @@ const DIFFICULTY_LEVELS = [
 interface GroupedFrameworks {
   [category: string]: CanonicalFramework[];
 }
-
+export const dynamic = 'force-dynamic';
 export default function DiscoveryPage() {
   const searchParams = useSearchParams();
   const store = useDiscoveryStore();

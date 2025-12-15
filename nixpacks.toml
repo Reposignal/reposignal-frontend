@@ -5,7 +5,7 @@ nixPkgs = ["bun"]
 cmds = ["bun install --frozen-lockfile"]
 
 [phases.build]
-cmds = ["bun run build"]
+cmds = []
 
 [start]
 cmds = "bun run dev"
