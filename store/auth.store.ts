@@ -1,12 +1,13 @@
 /**
  * Auth Store
- * Manages authentication state
+ * Manages authentication state (identity only, NO tokens)
+ * Auth state is derived from backend via cookies
  */
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-interface User {
+export interface User {
   githubUserId: number;
   username: string;
   avatarUrl: string | null;
@@ -14,35 +15,34 @@ interface User {
 }
 
 interface AuthState {
-  isLoggedIn: boolean;
   user: User | null;
-  sessionToken: string | null;
+  
+  // Computed
+  isAuthenticated: boolean;
   
   // Actions
-  setAuth: (user: User, token: string) => void;
+  setUser: (user: User | null) => void;
   clearAuth: () => void;
   updateUser: (updates: Partial<User>) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
-      isLoggedIn: false,
+    (set, get) => ({
       user: null,
-      sessionToken: null,
+      
+      get isAuthenticated() {
+        return get().user !== null;
+      },
 
-      setAuth: (user, token) =>
+      setUser: (user) =>
         set({
-          isLoggedIn: true,
           user,
-          sessionToken: token,
         }),
 
       clearAuth: () =>
         set({
-          isLoggedIn: false,
           user: null,
-          sessionToken: null,
         }),
 
       updateUser: (updates) =>

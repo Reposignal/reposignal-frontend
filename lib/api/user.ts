@@ -1,10 +1,11 @@
 /**
  * User API Client
  * Handles all authenticated user API calls
+ * Authentication via cookies (credentials: 'include')
  */
 
 import { apiPost, apiGet } from './client';
-import { userRoutes } from './routes';
+import { userRoutes, authRoutes } from './routes';
 
 export interface Profile {
   githubUserId: number;
@@ -35,24 +36,36 @@ export interface LogEntry {
   createdAt: string;
 }
 
+/**
+ * Get current authenticated user from backend
+ * This is the ONLY source of truth for auth state
+ */
+export async function getCurrentUser(): Promise<Profile | null> {
+  try {
+    return await apiGet<Profile>(authRoutes.me);
+  } catch (error: any) {
+    if (error?.status === 401) {
+      return null;
+    }
+    throw error;
+  }
+}
+
 export async function updateProfile(
-  data: UpdateProfileData,
-  token: string
+  data: UpdateProfileData
 ): Promise<Profile> {
-  return apiPost<Profile>(userRoutes.updateProfile, data, { token });
+  return apiPost<Profile>(userRoutes.updateProfile, data);
 }
 
 export async function updateRepositorySettings(
   repoId: number,
-  settings: RepositorySettings,
-  token: string
+  settings: RepositorySettings
 ): Promise<any> {
-  return apiPost<any>(userRoutes.updateRepositorySettings(repoId), settings, { token });
+  return apiPost<any>(userRoutes.updateRepositorySettings(repoId), settings);
 }
 
 export async function getRepositoryLogs(
   repoId: number,
-  token: string,
   params: { limit?: number; offset?: number } = {}
 ): Promise<LogEntry[]> {
   const queryParams = new URLSearchParams();
@@ -60,5 +73,5 @@ export async function getRepositoryLogs(
   if (params.offset) queryParams.append('offset', params.offset.toString());
 
   const url = `${userRoutes.getRepositoryLogs(repoId)}?${queryParams.toString()}`;
-  return apiGet<LogEntry[]>(url, { token });
+  return apiGet<LogEntry[]>(url);
 }

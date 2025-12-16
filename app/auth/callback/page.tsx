@@ -1,36 +1,31 @@
 /**
  * GitHub OAuth Callback Page
- * Handles GitHub OAuth callback
+ * Backend handles the OAuth flow and sets cookies
+ * Frontend just redirects after callback
  */
 
 'use client';
 
 import { useEffect } from 'react';
-import { use } from 'react';
 import { useRouter } from 'next/navigation';
+import { getCurrentUser } from '@/lib/api/user';
 import { useAuthStore } from '@/store/auth.store';
 
-export default function AuthCallbackPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ code?: string }>;
-}) {
-  const params = use(searchParams);
+export default function AuthCallbackPage() {
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setUser = useAuthStore((state) => state.setUser);
 
   useEffect(() => {
     async function handleCallback() {
-      const code = params.code;
-
-      if (!code) {
-        router.push('/');
-        return;
-      }
-
       try {
-        // TODO: Exchange code for session token via backend
-        // For now, redirect to home
+        // Backend has already handled OAuth and set cookies
+        // Just fetch the user to update our local state
+        const user = await getCurrentUser();
+        
+        if (user) {
+          setUser(user);
+        }
+        
         router.push('/');
       } catch (err) {
         console.error('Auth callback error:', err);
@@ -39,7 +34,7 @@ export default function AuthCallbackPage({
     }
 
     handleCallback();
-  }, [params.code, router, setAuth]);
+  }, [router, setUser]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

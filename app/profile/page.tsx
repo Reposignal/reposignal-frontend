@@ -14,26 +14,23 @@ import { Button } from '@/components/common/Button';
 import { useRequireAuth } from '@/lib/guards/requireAuth';
 
 export default function ProfilePage() {
-  const isLoggedIn = useRequireAuth();
+  const isAuthenticated = useRequireAuth();
   const user = useAuthStore((state) => state.user);
-  const sessionToken = useAuthStore((state) => state.sessionToken);
   const updateUser = useAuthStore((state) => state.updateUser);
 
   const [bio, setBio] = useState(user?.bio || '');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  if (!isLoggedIn || !user) {
+  if (!isAuthenticated || !user) {
     return null;
   }
 
   const handleSave = async () => {
-    if (!sessionToken) return;
-
     try {
       setSaving(true);
       setSaved(false);
-      const updated = await updateProfile({ bio }, sessionToken);
+      const updated = await updateProfile({ bio });
       updateUser({ bio: updated.bio });
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);

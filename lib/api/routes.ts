@@ -22,6 +22,7 @@ export const publicRoutes = {
 
 // Auth routes
 export const authRoutes = {
+  me: `${API_BASE}/auth/me`,
   githubLogin: `${API_BASE}/auth/github/login`,
   githubCallback: `${API_BASE}/auth/github/callback`,
   logout: `${API_BASE}/auth/logout`,

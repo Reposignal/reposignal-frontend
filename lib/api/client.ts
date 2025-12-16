@@ -1,17 +1,15 @@
 /**
  * API Client
  * Base HTTP client for API requests
+ * Uses cookie-based authentication (credentials: 'include')
+ * NEVER uses Authorization headers or tokens
  */
 
 import { checkApiAvailability } from './routes';
 
 checkApiAvailability();
 
-interface FetchOptions extends RequestInit {
-  token?: string;
-}
-
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     public status: number,
     public code: string,
@@ -43,18 +41,15 @@ async function handleResponse<T>(response: Response): Promise<T> {
   return response.json();
 }
 
-export async function apiGet<T>(url: string, options?: FetchOptions): Promise<T> {
+export async function apiGet<T>(url: string, options?: RequestInit): Promise<T> {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
 
-  if (options?.token) {
-    headers['Authorization'] = `Bearer ${options.token}`;
-  }
-
   const response = await fetch(url, {
     method: 'GET',
     headers,
+    credentials: 'include',
     ...options,
   });
 
@@ -64,20 +59,17 @@ export async function apiGet<T>(url: string, options?: FetchOptions): Promise<T>
 export async function apiPost<T>(
   url: string,
   data?: any,
-  options?: FetchOptions
+  options?: RequestInit
 ): Promise<T> {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
 
-  if (options?.token) {
-    headers['Authorization'] = `Bearer ${options.token}`;
-  }
-
   const response = await fetch(url, {
     method: 'POST',
     headers,
     body: data ? JSON.stringify(data) : undefined,
+    credentials: 'include',
     ...options,
   });
 
@@ -86,23 +78,18 @@ export async function apiPost<T>(
 
 export async function apiDelete<T>(
   url: string,
-  options?: FetchOptions
+  options?: RequestInit
 ): Promise<T> {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
 
-  if (options?.token) {
-    headers['Authorization'] = `Bearer ${options.token}`;
-  }
-
   const response = await fetch(url, {
     method: 'DELETE',
     headers,
+    credentials: 'include',
     ...options,
   });
 
   return handleResponse<T>(response);
 }
-
-export { ApiError };

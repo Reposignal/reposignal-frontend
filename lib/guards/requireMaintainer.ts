@@ -12,16 +12,16 @@ import { useMaintainerStore } from '@/store/maintainer.store';
 
 export function useRequireMaintainer() {
   const router = useRouter();
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const repos = useMaintainerStore((state) => state.repos);
 
-  const isMaintainer = isLoggedIn && repos.length > 0;
+  const isMaintainer = isAuthenticated && repos.length > 0;
 
   useEffect(() => {
-    if (!isLoggedIn || repos.length === 0) {
+    if (!isAuthenticated || repos.length === 0) {
       router.push('/');
     }
-  }, [isLoggedIn, repos.length, router]);
+  }, [isAuthenticated, repos.length, router]);
 
   return isMaintainer;
 }

@@ -6,9 +6,8 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useMaintainerStore } from '@/store/maintainer.store';
-import { useAuthStore } from '@/store/auth.store';
 import { useRequireMaintainer } from '@/lib/guards/requireMaintainer';
 import { updateRepositorySettings } from '@/lib/api/user';
 import { Button } from '@/components/common/Button';
@@ -18,7 +17,6 @@ export default function MaintainerPage() {
   const isMaintainer = useRequireMaintainer();
   const repos = useMaintainerStore((state) => state.repos);
   const updateRepoState = useMaintainerStore((state) => state.updateRepoState);
-  const sessionToken = useAuthStore((state) => state.sessionToken);
   const [updating, setUpdating] = useState<number | null>(null);
 
   if (!isMaintainer) {
@@ -29,11 +27,9 @@ export default function MaintainerPage() {
     repoId: number,
     newState: 'off' | 'public' | 'paused'
   ) => {
-    if (!sessionToken) return;
-
     try {
       setUpdating(repoId);
-      await updateRepositorySettings(repoId, { state: newState }, sessionToken);
+      await updateRepositorySettings(repoId, { state: newState });
       updateRepoState(repoId, newState);
     } catch (err) {
       console.error('Failed to update repository state:', err);

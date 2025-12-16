@@ -11,12 +11,12 @@ import { useMaintainerStore } from '@/store/maintainer.store';
 import { redirectToGitHubLogin, logout } from '@/lib/auth/github';
 
 export function Navigation() {
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const user = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const clearAuth = useAuthStore((state) => state.clearAuth);
   const repos = useMaintainerStore((state) => state.repos);
 
-  const isMaintainer = isLoggedIn && repos.length > 0;
+  const isMaintainer = isAuthenticated && repos.length > 0;
 
   const handleLogin = () => {
     redirectToGitHubLogin();
@@ -64,7 +64,7 @@ export function Navigation() {
               About
             </Link>
 
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <div className="flex items-center gap-4">
                 <Link
                   href="/profile"
