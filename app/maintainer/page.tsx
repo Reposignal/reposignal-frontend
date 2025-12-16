@@ -14,14 +14,10 @@ import { Button } from '@/components/common/Button';
 import { EmptyState } from '@/components/common/EmptyState';
 
 export default function MaintainerPage() {
-  const isMaintainer = useRequireMaintainer();
+  useRequireMaintainer();
   const repos = useMaintainerStore((state) => state.repos);
   const updateRepoState = useMaintainerStore((state) => state.updateRepoState);
   const [updating, setUpdating] = useState<number | null>(null);
-
-  if (!isMaintainer) {
-    return null;
-  }
 
   const handleStateChange = async (
     repoId: number,

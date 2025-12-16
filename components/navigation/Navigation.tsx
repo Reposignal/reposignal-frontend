@@ -6,13 +6,13 @@
 'use client';
 
 import Link from 'next/link';
-import { useAuthStore } from '@/store/auth.store';
+import { useAuthStore, selectIsAuthenticated } from '@/store/auth.store';
 import { useMaintainerStore } from '@/store/maintainer.store';
 import { redirectToGitHubLogin, logout } from '@/lib/auth/github';
 
 export function Navigation() {
   const user = useAuthStore((state) => state.user);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAuthenticated = useAuthStore(selectIsAuthenticated);
   const clearAuth = useAuthStore((state) => state.clearAuth);
   const repos = useMaintainerStore((state) => state.repos);
 

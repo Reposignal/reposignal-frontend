@@ -7,11 +7,11 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/store/auth.store';
+import { useAuthStore, selectIsAuthenticated } from '@/store/auth.store';
 
 export function useRequireAuth() {
   const router = useRouter();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAuthenticated = useAuthStore(selectIsAuthenticated);
 
   useEffect(() => {
     if (!isAuthenticated) {

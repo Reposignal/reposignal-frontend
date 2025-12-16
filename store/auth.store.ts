@@ -17,9 +17,6 @@ export interface User {
 interface AuthState {
   user: User | null;
   
-  // Computed
-  isAuthenticated: boolean;
-  
   // Actions
   setUser: (user: User | null) => void;
   clearAuth: () => void;
@@ -28,12 +25,8 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       user: null,
-      
-      get isAuthenticated() {
-        return get().user !== null;
-      },
 
       setUser: (user) =>
         set({
@@ -55,3 +48,6 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
+// Selector for derived authentication state
+export const selectIsAuthenticated = (state: AuthState) => state.user !== null;

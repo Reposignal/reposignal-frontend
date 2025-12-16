@@ -14,7 +14,7 @@ import { Button } from '@/components/common/Button';
 import { useRequireAuth } from '@/lib/guards/requireAuth';
 
 export default function ProfilePage() {
-  const isAuthenticated = useRequireAuth();
+  useRequireAuth();
   const user = useAuthStore((state) => state.user);
   const updateUser = useAuthStore((state) => state.updateUser);
 
@@ -22,7 +22,7 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  if (!isAuthenticated || !user) {
+  if (!user) {
     return null;
   }
 
