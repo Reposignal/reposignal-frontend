@@ -6,12 +6,13 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useSetupStore } from '@/store/setup.store';
 import { getSetupContext, completeSetup } from '@/lib/api/setup';
 import { Button } from '@/components/common/Button';
-import SetupQuerySync from './SetupQuerySync';
 
 export default function SetupClient() {
+  const params = useSearchParams();
   const {
     installationId,
     context,
@@ -19,6 +20,7 @@ export default function SetupClient() {
     settings,
     status,
     errorMessage,
+    setInstallationId,
     setContext,
     updateRepositoryState,
     updateSettings,
@@ -26,9 +28,26 @@ export default function SetupClient() {
     setError,
   } = useSetupStore();
 
-  // Fetch setup context when installation ID is set
+  // Parse URL params and fetch setup context
   useEffect(() => {
-    if (!installationId || context) return;
+    // Parse installation_id from URL if not already set
+    if (!installationId) {
+      const idParam = params?.get('installation_id');
+
+      if (!idParam || !/^\d+$/.test(idParam)) {
+        setError('Invalid installation link.');
+        return;
+      }
+
+      const id = Number(idParam);
+      setInstallationId(id);
+      return; // Let the next render fetch the context
+    }
+
+    // Fetch context if we have installation ID but no context yet
+    if (context) {
+      return;
+    }
 
     async function fetch() {
       try {
@@ -54,7 +73,7 @@ export default function SetupClient() {
     }
 
     fetch();
-  }, [installationId, context, setStatus, setContext, setError]);
+  }, [params, installationId, context, setInstallationId, setStatus, setContext, setError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,7 +150,6 @@ export default function SetupClient() {
   // Setup form
   return (
     <>
-      <SetupQuerySync />
       <div className="min-h-screen bg-neutral-950 flex items-center justify-center px-4 py-12">
         <div className="max-w-2xl w-full">
           <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-8">

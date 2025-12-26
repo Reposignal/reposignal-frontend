@@ -66,7 +66,7 @@ export const useSetupStore = create<SetupState>()((set) => ({
   status: 'idle',
   errorMessage: null,
 
-  setInstallationId: (id) => set({ installationId: id }),
+  setInstallationId: (id) => set({ installationId: id, status: 'idle', errorMessage: null }),
 
   setContext: (context) =>
     set({
