@@ -13,7 +13,7 @@ async function delay(ms: number) {
 
 export default async function SetupPage() {
   // Intentional 2 second delay for testing
-  await delay(2000);
+  await delay(5000);
 
   return (
     <Suspense fallback={null}>
