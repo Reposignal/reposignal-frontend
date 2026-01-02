@@ -7,7 +7,14 @@
 import { Suspense } from 'react';
 import SetupClient from './SetupClient';
 
-export default function SetupPage() {
+async function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export default async function SetupPage() {
+  // Intentional 2 second delay for testing
+  await delay(2000);
+
   return (
     <Suspense fallback={null}>
       <SetupClient />
