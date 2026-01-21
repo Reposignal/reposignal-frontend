@@ -52,6 +52,8 @@ export default function SetupClient() {
     async function fetch() {
       try {
         setStatus('fetching-context');
+        // Wait 1 second for backend to update database
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const data = await getSetupContext(installationId as number);
         setContext(data);
       } catch (err: any) {
@@ -82,6 +84,8 @@ export default function SetupClient() {
 
     try {
       setStatus('loading');
+      // Wait 1 second for backend to update database
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       await completeSetup({
         installation_id: installationId,
